@@ -1,0 +1,21 @@
+# configuration values for the armbian-zram-config service
+#
+# enable the armbian-zram-config service?
+ENABLED=true
+
+# percentage of zram usage compared to physically available DRAM.
+# Huge overcommitment (300) is possible and sometimes desirable. See
+# https://forum.armbian.com/topic/5565-zram-vs-swap/?do=findComment&comment=61082
+# ZRAM_PERCENTAGE=50
+
+# create how many zram devices max for swap
+# ZRAM_MAX_DEVICES=4
+
+# Which algorithm to choose for zram based swapping
+# SWAP_ALGORITHM=lz4
+
+# Which algorithm to choose for zram based ramlog partition
+# RAMLOG_ALGORITHM=zstd
+
+# Which algorithm to choose for zram based /tmp
+# TMP_ALGORITHM=lz4hc
