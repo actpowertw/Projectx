@@ -1,0 +1,74 @@
+diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
+index c28dca0c..a2cfab25 100644
+--- a/drivers/char/Kconfig
++++ b/drivers/char/Kconfig
+@@ -7,6 +7,10 @@ menu "Character devices"
+ 
+ source "drivers/tty/Kconfig"
+ 
++config DR_FIX
++	bool "Devesh's Fix for the H5 USB Regulators"
++	default y
++
+ config DEVMEM
+ 	bool "/dev/mem virtual device support"
+ 	default y
+diff --git a/drivers/char/Makefile b/drivers/char/Makefile
+index 7dc3abe6..adca10ad 100644
+--- a/drivers/char/Makefile
++++ b/drivers/char/Makefile
+@@ -15,6 +15,7 @@ obj-$(CONFIG_UV_MMTIMER)	+= uv_mmtimer.o
+ obj-$(CONFIG_IBM_BSR)		+= bsr.o
+ obj-$(CONFIG_SGI_MBCS)		+= mbcs.o
+ obj-$(CONFIG_BFIN_OTP)		+= bfin-otp.o
++obj-$(CONFIG_DR_FIX)		+= dr-fix.o
+ 
+ obj-$(CONFIG_PRINTER)		+= lp.o
+
+diff --git a/drivers/char/dr-fix.c b/drivers/char/dr-fix.c
+new file mode 100644
+index 00000000..2187fe87
+--- /dev/null
++++ b/drivers/char/dr-fix.c
+@@ -0,0 +1,41 @@
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/gpio.h>                 // Required for the IO functions
++#include <linux/interrupt.h>            // Required for the IRQ code
++
++#warning ("Building Devesh's Fix for the Firmware.")
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Devesh Rai");
++MODULE_DESCRIPTION("Fix for USB Regulator");
++MODULE_VERSION("0.1");
++static unsigned int regulator1 = 128;    // For USB2-DRVVBUS (PE0/128)  
++static unsigned int regulator2 = 355;   // For USB1-DRVVBUS (PL3/355)
++//static unsigned int regulator3 = 354;   // For USB0-DRVVBUS (PL2/354)
++
++
++static int __init dr_fix_init(void){
++   printk("Devesh's Fix for the USB Regulator.");
++   gpio_request(regulator1, "sysfs");          // USB2-DRVVBUS is hardcoded to 128, request it
++   gpio_direction_output(regulator1, true);   // Set the gpio to be in output mode and on
++   gpio_set_value(regulator1, true);          // Not required as set by line above (here for reference)
++
++   gpio_request(regulator2, "sysfs");          // USB1-DRVVBUS is hardcoded to 355, request it
++   gpio_direction_output(regulator2, true);   // Set the gpio to be in output mode and on
++   gpio_set_value(regulator2, true);          // Not required as set by line above (here for reference)
++/*
++   gpio_request(regulator3, "sysfs");          // USB0-DRVVBUS is hardcoded to 354, request it
++   gpio_direction_output(regulator3, true);   // Set the gpio to be in output mode and on
++   gpio_set_value(regulator3, true);          // Not required as set by line above (here for reference)
++*/
++   return 1;
++   
++}
++
++static void __exit dr_fix_exit(void){
++   printk(KERN_INFO "Goodbye!\n");
++}
++
++module_init(dr_fix_init);
++module_exit(dr_fix_exit);

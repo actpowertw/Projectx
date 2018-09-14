@@ -1,0 +1,58 @@
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-k1-plus.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-k1-plus.dts
+index dc286218..d1ef0eb5 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-k1-plus.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-k1-plus.dts
+@@ -183,9 +183,9 @@
+ };
+ 
+ &external_mdio {
+-	ext_rgmii_phy: ethernet-phy@7 {
++	ext_rgmii_phy: ethernet-phy@1 {
+ 		compatible = "ethernet-phy-ieee802.3-c22";
+-		reg = <7>;
++		reg = <1>;
+ 	};
+ };
+ &mixer0 {
+@@ -333,4 +333,4 @@
+ 	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
+ 	usb0_vbus-supply = <&reg_usb0_vbus>;
+ 	status = "okay";
+-};
+\ No newline at end of file
++};
+diff --git a/drivers/char/Kconfig.rej b/drivers/char/Kconfig.rej
+new file mode 100644
+index 00000000..ea88759d
+--- /dev/null
++++ b/drivers/char/Kconfig.rej
+@@ -0,0 +1,13 @@
++--- drivers/char/Kconfig
+++++ drivers/char/Kconfig
++@@ -7,6 +7,10 @@ menu "Character devices"
++ 
++ source "drivers/tty/Kconfig"
++ 
+++config DR_FIX
+++	bool "Devesh's Fix for the H5 USB Regulators"
+++	default y
+++
++ config DEVMEM
++ 	bool "/dev/mem virtual device support"
++ 	default y
+diff --git a/drivers/char/Makefile.rej b/drivers/char/Makefile.rej
+new file mode 100644
+index 00000000..b116c0a6
+--- /dev/null
++++ b/drivers/char/Makefile.rej
+@@ -0,0 +1,10 @@
++--- drivers/char/Makefile
+++++ drivers/char/Makefile
++@@ -15,6 +15,7 @@ obj-$(CONFIG_UV_MMTIMER)	+= uv_mmtimer.o
++ obj-$(CONFIG_IBM_BSR)		+= bsr.o
++ obj-$(CONFIG_SGI_MBCS)		+= mbcs.o
++ obj-$(CONFIG_BFIN_OTP)		+= bfin-otp.o
+++obj-$(CONFIG_DR_FIX)		+= dr-fix.o
++ 
++ obj-$(CONFIG_PRINTER)		+= lp.o
++ 
