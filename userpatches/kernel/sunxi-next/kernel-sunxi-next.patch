@@ -1,3 +1,50 @@
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
+index 948df1868..3b9426ab4 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
+@@ -49,7 +49,16 @@
+ 
+ 	aliases {
+ 		/* ethernet0 is the H3 emac, defined in sun8i-h3.dtsi */
+-		ethernet1 = &rtl8189ftv;
++		ethernet0 = &emac;
++	};
++	reg_gmac_3v3: gmac-3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "gmac-3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		startup-delay-us = <100000>;
++		enable-active-high;
++		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>;
+ 	};
+ 
+ 	wifi_pwrseq: wifi_pwrseq {
+@@ -59,8 +68,21 @@
+ };
+ 
+ &emac {
+-	/* LEDs changed to active high on the plus */
+-	/delete-property/ allwinner,leds-active-low;
++	pinctrl-names = "default";
++	pinctrl-0 = <&emac_rgmii_pins>;
++	phy-supply = <&reg_gmac_3v3>;
++	phy-handle = <&ext_rgmii_phy>;
++	phy-mode = "rgmii";
++
++	allwinner,leds-active-low;
++	status = "okay";
++};
++
++&external_mdio {
++	ext_rgmii_phy: ethernet-phy@1 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <0>;
++	};
+ };
+ 
+ &mmc1 {
+
 diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
 index c28dca0c..a2cfab25 100644
 --- a/drivers/char/Kconfig
